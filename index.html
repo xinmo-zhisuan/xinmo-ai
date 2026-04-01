@@ -1,0 +1,501 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>信默智算 | 纯血信创端侧 AI 算力终端</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@400;700&display=swap" rel="stylesheet">
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        dark: '#050505',
+                        terminal: '#0d1117',
+                        accent: '#00f0ff', // 赛博朋克青色
+                        danger: '#ff003c', // 警告红
+                    },
+                    fontFamily: {
+                        mono: ['"Fira Code"', 'monospace'],
+                        sans: ['"PingFang SC"', '"Microsoft YaHei"', 'sans-serif']
+                    },
+                    animation: {
+                        'pulse-slow': 'pulse 4s cubic-bezier(0.4, 0, 0.6, 1) infinite',
+                        'scanline': 'scanline 8s linear infinite',
+                    },
+                    keyframes: {
+                        scanline: {
+                            '0%': { transform: 'translateY(-100%)' },
+                            '100%': { transform: 'translateY(1000%)' }
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        .terminal-grid {
+            background-image: linear-gradient(rgba(0, 240, 255, 0.05) 1px, transparent 1px),
+                              linear-gradient(90deg, rgba(0, 240, 255, 0.05) 1px, transparent 1px);
+            background-size: 40px 40px;
+        }
+        .scanline {
+            width: 100%;
+            height: 2px;
+            background: linear-gradient(to bottom, transparent, rgba(0, 240, 255, 0.2), transparent);
+            position: fixed;
+            top: 0;
+            z-index: 100;
+            pointer-events: none;
+        }
+        .glow-text {
+            text-shadow: 0 0 10px rgba(0, 240, 255, 0.5);
+        }
+        .box-shadow-accent {
+            box-shadow: 0 0 20px rgba(0, 240, 255, 0.15);
+        }
+        @keyframes typing {
+            from { width: 0 }
+            to { width: 100% }
+        }
+        .typewriter {
+            overflow: hidden;
+            border-right: .15em solid #00f0ff;
+            white-space: nowrap;
+            margin: 0 auto;
+            letter-spacing: .15em;
+            animation: typing 3.5s steps(40, end), blink-caret .75s step-end infinite;
+        }
+        @keyframes blink-caret {
+            from, to { border-color: transparent }
+            50% { border-color: #00f0ff; }
+        }
+    </style>
+</head>
+<body class="bg-dark text-gray-300 font-sans antialiased selection:bg-accent selection:text-black overflow-x-hidden">
+
+    <!-- 扫描线动画 -->
+    <div class="scanline animate-scanline"></div>
+
+    <!-- 导航栏 -->
+    <nav class="border-b border-gray-800 bg-dark/90 backdrop-blur-xl fixed w-full z-50">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex items-center justify-between h-20">
+                <div class="flex items-center gap-4 group cursor-pointer">
+                    <div class="w-10 h-10 bg-accent text-dark flex items-center justify-center font-bold font-mono text-2xl rounded-sm transition-transform group-hover:rotate-90">X</div>
+                    <div class="flex flex-col">
+                        <span class="text-white font-bold text-xl tracking-tighter glow-text">信默智算</span>
+                        <span class="text-[10px] font-mono text-accent/60 tracking-widest uppercase">Xinmo Intelligent Computing</span>
+                    </div>
+                </div>
+                <div class="hidden md:block">
+                    <div class="ml-10 flex items-center space-x-10 font-mono text-sm">
+                        <a href="#product" class="text-accent hover:glow-text transition-all underline-offset-8 hover:underline">> 产品</a>
+                        <a href="#security" class="hover:text-accent transition-colors tracking-tight">/ 安全架构</a>
+                        <a href="#news" class="hover:text-accent transition-colors tracking-tight">/ 动态</a>
+                        <a href="#scenarios" class="hover:text-accent transition-colors tracking-tight">/ 应用场景</a>
+                        <a href="#" class="bg-white/5 border border-white/10 px-4 py-1.5 rounded hover:bg-accent hover:text-dark transition-all">Console Login</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <section class="relative pt-48 pb-32 overflow-hidden terminal-grid">
+        <div class="absolute inset-0 bg-gradient-to-b from-dark via-transparent to-dark pointer-events-none"></div>
+        
+        <div class="max-w-7xl mx-auto px-4 text-center relative z-10">
+            <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full border border-accent/30 bg-accent/5 text-accent text-xs font-mono mb-8 animate-pulse">
+                <span class="w-2 h-2 bg-accent rounded-full"></span>
+                SYSTEM STATUS: SECURE / AIR-GAPPED
+            </div>
+            
+            <h1 class="text-5xl md:text-7xl font-extrabold text-white tracking-tighter mb-6 leading-tight">
+                <span class="block">100% 物理断网</span>
+                <span class="block text-accent font-mono mt-2 glow-text">AI NAS 信默龙虾盒子</span>
+            </h1>
+            
+            <p class="mt-8 max-w-3xl mx-auto text-lg md:text-xl text-gray-400 leading-relaxed">
+                在绝对无线电静默的“黑盒”状态下，跑通百亿参数大模型。<br class="hidden md:block">
+                专为政企机要办公打造的<span class="text-white font-bold">端侧 AI 算力底座</span>，拒绝任何形式的隐私外泄。
+            </p>
+
+            <div class="mt-12 flex flex-col sm:flex-row justify-center gap-6 font-mono">
+                <a href="#specs" class="group relative px-10 py-4 bg-accent text-dark font-bold rounded-sm overflow-hidden transition-all hover:scale-105 active:scale-95">
+                    <span class="relative z-10 flex items-center gap-2">
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"></path></svg>
+                        初始化部署
+                    </span>
+                    <div class="absolute inset-0 bg-white translate-y-full group-hover:translate-y-0 transition-transform duration-300 opacity-20"></div>
+                </a>
+                <a href="#security" class="px-10 py-4 border border-gray-600 text-gray-300 hover:border-accent hover:text-accent transition-all rounded-sm flex items-center justify-center gap-2">
+                    <svg class="w-5 h-5 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"></path></svg>
+                    安全白皮书
+                </a>
+            </div>
+
+            <!-- 硬件预览装饰 -->
+            <div class="mt-24 relative max-w-4xl mx-auto">
+                <div class="absolute inset-0 bg-accent/20 blur-[100px] rounded-full"></div>
+                <div class="relative bg-terminal border border-gray-700 p-2 rounded-lg box-shadow-accent">
+                    <div class="flex items-center gap-2 mb-2 px-4 py-2 border-b border-gray-800">
+                        <div class="flex gap-1.5">
+                            <div class="w-3 h-3 rounded-full bg-danger/50"></div>
+                            <div class="w-3 h-3 rounded-full bg-yellow-500/50"></div>
+                            <div class="w-3 h-3 rounded-full bg-green-500/50"></div>
+                        </div>
+                        <div class="mx-auto text-[10px] font-mono text-gray-500">TERMINAL INTERFACE - V2.0.4</div>
+                    </div>
+                    <div class="aspect-video bg-black rounded p-6 font-mono text-left text-sm overflow-hidden text-accent/80">
+                        <p class="mb-1 text-white opacity-50">[   0.000000] Booting Linux on physical hardware (Xinmo Kernel)...</p>
+                        <p class="mb-1">[   0.412983] RK3588 detected: 8 cores active.</p>
+                        <p class="mb-1">[   0.892110] NPU status: 6.0 TOPS standby.</p>
+                        <p class="mb-1">[   1.233491] Network interfaces: <span class="text-danger font-bold">DISABLED (Physical)</span></p>
+                        <p class="mb-1">[   1.562310] Loading LLM Weights: DeepSeek-7B-Quantized...</p>
+                        <p class="mb-1 text-green-400"># System ready. Welcome to XINMO AI Terminal.</p>
+                        <p class="mt-4 animate-pulse">_</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Specs Section -->
+    <section id="specs" class="py-24 bg-terminal border-y border-gray-800 relative">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="mb-16">
+                <h2 class="text-3xl font-bold text-white mb-2 font-mono flex items-center gap-3">
+                    <span class="text-accent text-xl">01.</span>
+                    System.getCoreSpecs()
+                </h2>
+                <div class="h-1 w-20 bg-accent"></div>
+            </div>
+            
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+                <!-- Spec 1 -->
+                <div class="group bg-dark p-8 border border-gray-800 hover:border-accent/50 transition-all hover:-translate-y-2">
+                    <div class="text-accent mb-6 group-hover:scale-110 transition-transform">
+                        <svg class="w-10 h-10" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="square" stroke-linejoin="miter" stroke-width="2" d="M9 3v2m6-2v2M9 19v2m6-2v2M5 9H3m2 6H3m18-6h-2m2 6h-2M7 19h10a2 2 0 002-2V7a2 2 0 00-2-2H7a2 2 0 00-2 2v10a2 2 0 002 2zM9 9h6v6H9V9z"></path></svg>
+                    </div>
+                    <h3 class="text-xl font-bold text-white mb-4">异构算力底座</h3>
+                    <ul class="space-y-3 font-mono text-sm">
+                        <li class="flex justify-between border-b border-white/5 pb-1">
+                            <span class="text-gray-500">CPU</span>
+                            <span class="text-gray-300 text-right">RK3588 (8-Core)</span>
+                        </li>
+                        <li class="flex justify-between border-b border-white/5 pb-1">
+                            <span class="text-gray-500">NPU</span>
+                            <span class="text-gray-300">6 TOPS 独立引擎</span>
+                        </li>
+                        <li class="flex justify-between border-b border-white/5 pb-1">
+                            <span class="text-gray-500">RAM</span>
+                            <span class="text-gray-300">16GB LPDDR4x</span>
+                        </li>
+                    </ul>
+                </div>
+
+                <!-- Spec 2 -->
+                <div class="group bg-dark p-8 border border-gray-800 hover:border-accent/50 transition-all hover:-translate-y-2">
+                    <div class="text-accent mb-6 group-hover:scale-110 transition-transform">
+                        <svg class="w-10 h-10" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="square" stroke-linejoin="miter" stroke-width="2" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 002-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"></path></svg>
+                    </div>
+                    <h3 class="text-xl font-bold text-white mb-4">端侧模型优化</h3>
+                    <ul class="space-y-3 font-mono text-sm">
+                        <li class="flex justify-between border-b border-white/5 pb-1">
+                            <span class="text-gray-500">Engine</span>
+                            <span class="text-gray-300">RKLLM v1.1</span>
+                        </li>
+                        <li class="flex justify-between border-b border-white/5 pb-1">
+                            <span class="text-gray-500">Precision</span>
+                            <span class="text-gray-300">INT4 / INT8 / FP16</span>
+                        </li>
+                        <li class="flex justify-between border-b border-white/5 pb-1">
+                            <span class="text-gray-500">Latency</span>
+                            <span class="text-gray-300">~85ms (First Token)</span>
+                        </li>
+                    </ul>
+                </div>
+
+                <!-- Spec 3 -->
+                <div class="group bg-dark p-8 border border-gray-800 hover:border-accent/50 transition-all hover:-translate-y-2">
+                    <div class="text-accent mb-6 group-hover:scale-110 transition-transform">
+                        <svg class="w-10 h-10" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="square" stroke-linejoin="miter" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"></path></svg>
+                    </div>
+                    <h3 class="text-xl font-bold text-white mb-4">防御级安全</h3>
+                    <ul class="space-y-3 font-mono text-sm">
+                        <li class="flex justify-between border-b border-white/5 pb-1">
+                            <span class="text-gray-500">RF Shielding</span>
+                            <span class="text-green-500">100% 硬件移除</span>
+                        </li>
+                        <li class="flex justify-between border-b border-white/5 pb-1">
+                            <span class="text-gray-500">Storage</span>
+                            <span class="text-gray-300">全盘 SM4 加密</span>
+                        </li>
+                        <li class="flex justify-between border-b border-white/5 pb-1">
+                            <span class="text-gray-500">Emergency</span>
+                            <span class="text-danger font-bold underline">硬件一键自毁</span>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Security Architecture Section -->
+    <section id="security" class="py-24 bg-dark relative overflow-hidden">
+        <div class="max-w-7xl mx-auto px-4">
+            <div class="flex flex-col lg:flex-row items-center gap-16">
+                <div class="lg:w-1/2">
+                    <div class="mb-8">
+                        <h2 class="text-3xl font-bold text-white mb-2 font-mono flex items-center gap-3">
+                            <span class="text-accent text-xl">02.</span>
+                            Air-Gap Security
+                        </h2>
+                        <div class="h-1 w-20 bg-accent"></div>
+                    </div>
+                    <p class="text-gray-400 text-lg mb-6 leading-relaxed">
+                        “信默龙虾盒子”不仅是软件上的断网，更是在 PCB 设计层面彻底移除无线模块的<span class="text-white">“纯血硬隔离”</span>。
+                    </p>
+                    <div class="space-y-6">
+                        <div class="flex gap-4 p-4 bg-white/5 border-l-2 border-accent">
+                            <div class="text-accent font-bold font-mono">01</div>
+                            <div>
+                                <h4 class="text-white font-bold mb-1">单向安全导入网闸</h4>
+                                <p class="text-sm text-gray-500">仅允许通过受控 USB 或加密私有协议导入知识库，杜绝回传风险。</p>
+                            </div>
+                        </div>
+                        <div class="flex gap-4 p-4 bg-white/5 border-l-2 border-gray-700">
+                            <div class="text-gray-500 font-bold font-mono">02</div>
+                            <div>
+                                <h4 class="text-white font-bold mb-1">端侧国产内核</h4>
+                                <p class="text-sm text-gray-500">基于 OpenHarmony/麒麟系统底座深度加固，无国外底层代码后门。</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="lg:w-1/2 relative group">
+                    <div class="absolute -inset-1 bg-gradient-to-r from-accent to-blue-600 rounded-xl blur opacity-25 group-hover:opacity-50 transition duration-1000"></div>
+                    <div class="relative bg-terminal border border-gray-800 p-8 rounded-xl">
+                        <div class="grid grid-cols-2 gap-4">
+                            <!-- 模拟拓扑图 -->
+                            <div class="col-span-2 flex justify-center mb-4">
+                                <div class="px-6 py-2 border-2 border-accent rounded text-accent font-bold font-mono animate-pulse">LOBSTER AI CORE</div>
+                            </div>
+                            <div class="flex flex-col items-center gap-4">
+                                <div class="w-1 bg-gray-700 h-12"></div>
+                                <div class="p-4 border border-gray-700 rounded-lg text-center text-xs">
+                                    <div class="text-gray-500 mb-1">INPUT</div>
+                                    <div class="text-white">USB-C/SM4</div>
+                                </div>
+                            </div>
+                            <div class="flex flex-col items-center gap-4">
+                                <div class="w-1 bg-gray-700 h-12"></div>
+                                <div class="p-4 border border-gray-700 rounded-lg text-center text-xs">
+                                    <div class="text-gray-500 mb-1">OUTPUT</div>
+                                    <div class="text-white">HDMI/Display</div>
+                                </div>
+                            </div>
+                            <div class="col-span-2 mt-4 text-center">
+                                <div class="inline-block px-4 py-2 bg-danger/20 border border-danger/40 rounded text-danger text-[10px] font-mono">
+                                    ! WARNING: NO WIRELESS TRANSMISSION DETECTED !
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- News & Events Section -->
+    <section id="news" class="py-24 bg-terminal relative overflow-hidden">
+        <!-- 装饰性背景文字 -->
+        <div class="absolute -right-10 top-20 text-[12rem] font-bold text-white/5 pointer-events-none select-none">ACT</div>
+        
+        <div class="max-w-7xl mx-auto px-4 relative z-10">
+            <div class="flex justify-between items-end mb-16">
+                <div>
+                    <h2 class="text-3xl font-bold text-white mb-2 font-mono flex items-center gap-3">
+                        <span class="text-accent text-xl">03.</span>
+                        实时动态 / News
+                    </h2>
+                    <div class="h-1 w-20 bg-accent"></div>
+                </div>
+                <a href="#" class="text-gray-500 hover:text-accent font-mono text-sm underline underline-offset-4">VIEW_ALL_LOGS</a>
+            </div>
+
+            <div id="news-container" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                <!-- 动态内容将由 JS 渲染 -->
+            </div>
+        </div>
+    </section>
+
+    <!-- Scenarios Section -->
+    <section id="scenarios" class="py-24 bg-dark">
+        <div class="max-w-7xl mx-auto px-4">
+            <div class="text-center mb-16">
+                <h2 class="text-3xl font-bold text-white mb-4">全行业安全赋能</h2>
+                <p class="text-gray-500 font-mono tracking-widest text-sm uppercase">Applications & Use Cases</p>
+            </div>
+            
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+                <div class="p-6 border border-gray-800 bg-terminal hover:bg-accent/5 transition-colors group">
+                    <h4 class="text-white font-bold mb-3 flex items-center gap-2">
+                        <span class="w-1.5 h-1.5 bg-accent"></span>
+                        机要公文助手
+                    </h4>
+                    <p class="text-sm text-gray-500 leading-relaxed group-hover:text-gray-400 transition-colors">
+                        针对保密文件进行智能化提炼、校对与润色，不离开内部物理环境。
+                    </p>
+                </div>
+                <div class="p-6 border border-gray-800 bg-terminal hover:bg-accent/5 transition-colors group">
+                    <h4 class="text-white font-bold mb-3 flex items-center gap-2">
+                        <span class="w-1.5 h-1.5 bg-accent"></span>
+                        敏感代码审计
+                    </h4>
+                    <p class="text-sm text-gray-500 leading-relaxed group-hover:text-gray-400 transition-colors">
+                        在隔离环境分析敏感项目代码漏洞，辅助开发，保障核心知识产权。
+                    </p>
+                </div>
+                <div class="p-6 border border-gray-800 bg-terminal hover:bg-accent/5 transition-colors group">
+                    <h4 class="text-white font-bold mb-3 flex items-center gap-2">
+                        <span class="w-1.5 h-1.5 bg-accent"></span>
+                        法律案卷研判
+                    </h4>
+                    <p class="text-sm text-gray-500 leading-relaxed group-hover:text-gray-400 transition-colors">
+                        私密分析海量司法案卷，提取关键争议点，确保审判辅助的私密性。
+                    </p>
+                </div>
+                <div class="p-6 border border-gray-800 bg-terminal hover:bg-accent/5 transition-colors group">
+                    <h4 class="text-white font-bold mb-3 flex items-center gap-2">
+                        <span class="w-1.5 h-1.5 bg-accent"></span>
+                        离线科研计算
+                    </h4>
+                    <p class="text-sm text-gray-500 leading-relaxed group-hover:text-gray-400 transition-colors">
+                        为实验室科研数据提供离线 AI 算力支持，防止前沿成果提前泄露。
+                    </p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="bg-dark py-16 border-t border-gray-800 relative">
+        <div class="max-w-7xl mx-auto px-4">
+            <div class="flex flex-col md:flex-row justify-between items-start gap-12 mb-12">
+                <div class="max-w-xs">
+                    <div class="flex items-center gap-3 mb-6">
+                        <div class="w-8 h-8 bg-accent text-dark flex items-center justify-center font-bold font-mono rounded-sm">X</div>
+                        <span class="text-white font-bold text-lg">信默智算</span>
+                    </div>
+                    <p class="text-gray-500 text-sm">
+                        致力于打造全球领先的纯血信创端侧 AI 算力终端，为数据安全守住最后一道防线。
+                    </p>
+                </div>
+                <div class="grid grid-cols-2 sm:grid-cols-3 gap-12 font-mono text-sm">
+                    <div class="flex flex-col gap-4">
+                        <span class="text-white font-bold">CONTACT</span>
+                        <a href="mailto:contact@xinmo.ai" class="text-gray-500 hover:text-accent">contact@xinmo.ai</a>
+                        <p class="text-gray-500">深圳 · 龙岗区</p>
+                    </div>
+                    <div class="flex flex-col gap-4">
+                        <span class="text-white font-bold">RESOURCES</span>
+                        <a href="#" class="text-gray-500 hover:text-accent">API Docs</a>
+                        <a href="#" class="text-gray-500 hover:text-accent">Firmware</a>
+                    </div>
+                </div>
+            </div>
+            <div class="flex flex-col md:flex-row justify-between items-center border-t border-white/5 pt-8 gap-4">
+                <p class="text-gray-600 font-mono text-[10px]">© 2026 SHENZHEN XINMO INTELLIGENT COMPUTING CO., LTD.</p>
+                <div class="flex gap-6 text-[10px] font-mono text-gray-600">
+                    <a href="#" class="hover:text-white">PRIVACY POLICY</a>
+                    <a href="#" class="hover:text-white">SECURITY TERMS</a>
+                    <span class="text-accent/30 animate-pulse"># STATUS: STABLE</span>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        // 简单的视差或交互效果
+        document.addEventListener('mousemove', (e) => {
+            const glow = document.querySelector('.glow-effect');
+            if (glow) {
+                const x = e.clientX;
+                const y = e.clientY;
+                glow.style.background = `radial-gradient(600px at ${x}px ${y}px, rgba(0, 240, 255, 0.03), transparent 80%)`;
+            }
+        });
+
+        // --- 动态管理数据 (带图片支持版！) ---
+        const newsData = [
+            {
+                date: '2026-03-30',
+                tag: '公司动态',
+                title: '三级联动！龙岗精准服务助力OPC成长',
+                desc: '市局为信默OPC创业企业代表颁发营业执照',
+                // 💡 只需要加上 image 字段并填入图片路径或链接即可
+                image: 'image/opc.png'
+            },
+            {
+                date: '2026-03-10',
+                tag: '产品发布',
+                title: '龙虾盒子 V2.0 固件发布：针对 DeepSeek 系列模型极致优化',
+                desc: '在 RK3588 平台上实现百亿参数模型首字响应低于 100ms 的突破。',
+                image: 'https://images.unsplash.com/photo-1518770660439-4636190af475?auto=format&fit=crop&q=80&w=800'
+            },
+            {
+                date: '2026-02-15',
+                tag: '商业活动',
+                title: '信默智算亮相 xxxxxx',
+                desc: '现场展示了完全隔离状态下的 AI 处理能力，引发行业专家广泛关注。',
+                image: 'https://images.unsplash.com/photo-1540575467063-178a50c2df87?auto=format&fit=crop&q=80&w=800'
+            }
+        ];
+
+        // 渲染动态函数 (升级图文混合排版)
+        function renderNews() {
+            const container = document.getElementById('news-container');
+            if (!container) return;
+            
+            container.innerHTML = newsData.map(item => `
+                <div class="group bg-dark/40 border border-gray-800 transition-all hover:bg-dark hover:border-accent/40 cursor-default flex flex-col h-full overflow-hidden">
+                    
+                    ${item.image ? `
+                    <!-- 图片区域：全彩原图显示，悬停时微距放大 -->
+                    <div class="w-full h-48 overflow-hidden border-b border-gray-800 bg-black">
+                        <img src="${item.image}" alt="${item.title}" class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105">
+                    </div>
+                    ` : `
+                    <!-- 无图时的顶部装饰线 -->
+                    <div class="w-full h-1 bg-gray-800 group-hover:bg-accent/50 transition-colors"></div>
+                    `}
+
+                    <!-- 文字内容区域 -->
+                    <div class="p-6 flex-1 flex flex-col">
+                        <div class="flex justify-between items-center mb-4">
+                            <span class="text-[10px] font-mono text-gray-500 bg-white/5 px-2 py-0.5">${item.date}</span>
+                            <span class="text-[10px] font-mono text-accent border border-accent/20 px-2 py-0.5">${item.tag}</span>
+                        </div>
+                        <h3 class="text-white font-bold mb-3 group-hover:text-accent transition-colors leading-snug">
+                            ${item.title}
+                        </h3>
+                        <p class="text-xs text-gray-500 leading-relaxed mb-4 flex-1">
+                            ${item.desc}
+                        </p>
+                        <!-- 底部悬停动画线 -->
+                        <div class="h-[1px] w-0 bg-accent group-hover:w-full transition-all duration-500 mt-auto"></div>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        // 初始化渲染
+        window.onload = () => {
+            renderNews();
+        };
+    </script>
+</body>
+</html>
